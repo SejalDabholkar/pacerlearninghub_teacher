@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:pacers_teacher/components/drawer.dart';
 import 'package:pacers_teacher/screens/events.dart';
 import 'package:pacers_teacher/screens/profile.dart';
+import 'package:pacers_teacher/screens/signup.dart';
 
 void main() {
-  runApp(MaterialApp(home: const MyApp()));
+  runApp(MaterialApp(home: const SignUp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -22,14 +23,14 @@ class _MyAppState extends State<MyApp> {
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 255, 118, 67),
         title: Center(child: Text("DASHBOARD")),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
-              },
-              icon: Icon(Icons.person_pin))
-        ],
+        // actions: [
+        //   IconButton(
+        //       onPressed: () {
+        //         Navigator.push(context,
+        //             MaterialPageRoute(builder: (context) => Profile()));
+        //       },
+        //       icon: Icon(Icons.person_pin))
+        // ],
       ),
       drawer: drawer(),
       body: Padding(
@@ -48,15 +49,29 @@ class _MyAppState extends State<MyApp> {
                   Padding(
                     padding: EdgeInsets.only(top: 23, bottom: 20),
                     child: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                          "https://media.licdn.com/dms/image/C5603AQEt20kHgEZyhQ/profile-displayphoto-shrink_800_800/0/1576818156705?e=2147483647&v=beta&t=1YxPo5n57kafpWHjQanIUC0TL8Cld-3PfB_9ENNlpSs"),
                       radius: 50,
                       backgroundColor: Colors.black,
                     ),
                   ),
-                  Text("NAme"),
-                  SizedBox(
-                    height: 10,
+                  Text(
+                    "Jessica Dsouza",
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
-                  Text("DEPT")
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "Computer",
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  )
                 ],
               ),
             ),
@@ -90,7 +105,13 @@ class _MyAppState extends State<MyApp> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Event 1"),
+                        Text(
+                          "Event 1",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
                         ElevatedButton(onPressed: () {}, child: Text("Join"))
                       ],
                     ),

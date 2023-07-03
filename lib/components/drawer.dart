@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:pacers_teacher/screens/assignment.dart';
 import 'package:pacers_teacher/screens/notes.dart';
 import 'package:pacers_teacher/screens/studentlist.dart';
+import 'package:pacers_teacher/screens/timetable.dart';
 
 class drawer extends StatefulWidget {
   const drawer({super.key});
@@ -32,10 +34,15 @@ class _drawerState extends State<drawer> {
           ElevatedButton(
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => NotesList()));
+                    MaterialPageRoute(builder: (context) => Notes()));
               },
               child: Text("Notes")),
-          ElevatedButton(onPressed: () {}, child: Text("Time Table")),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Timetable()));
+              },
+              child: Text("Time Table")),
           ElevatedButton(onPressed: () {}, child: Text("Results")),
         ],
       ),
