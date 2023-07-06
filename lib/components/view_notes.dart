@@ -77,7 +77,7 @@ class _ViewNotesState extends State<ViewNotes> {
     //   debugShowCheckedModeBanner: false,
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 255, 118, 67),
+          backgroundColor: Colors.blue,
           centerTitle: true,
           title: const Text('Notes')),
       body: Center(child: Builder(
@@ -141,7 +141,7 @@ class _PDFScreenState extends State<PDFScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 255, 118, 67),
+        backgroundColor: Colors.blue,
         title: Text("Notes"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),

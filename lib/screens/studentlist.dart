@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pacers_teacher/components/bestudents.dart';
+import 'package:pacers_teacher/components/drawer.dart';
 import 'package:pacers_teacher/components/festudents.dart';
 import 'package:pacers_teacher/components/sestudents.dart';
 import 'package:pacers_teacher/components/testudents.dart';
@@ -16,9 +17,11 @@ class _StudentListState extends State<StudentList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 255, 118, 67),
+        backgroundColor: Colors.blue,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
           icon: Icon(Icons.arrow_back_ios_new_rounded),
         ),
         title: Center(
@@ -38,7 +41,7 @@ class _StudentListState extends State<StudentList> {
                     height: 70,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 255, 118, 67),
+                      color: Colors.blue,
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
                     child: Padding(
@@ -49,7 +52,9 @@ class _StudentListState extends State<StudentList> {
                       child: Text(
                         "FE COMP",
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   )),
@@ -65,7 +70,7 @@ class _StudentListState extends State<StudentList> {
                     height: 70,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 255, 118, 67),
+                      color: Colors.blue,
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
                     child: Padding(
@@ -76,7 +81,9 @@ class _StudentListState extends State<StudentList> {
                       child: Text(
                         "SE COMP",
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   )),
@@ -92,7 +99,7 @@ class _StudentListState extends State<StudentList> {
                     height: 70,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 255, 118, 67),
+                      color: Colors.blue,
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
                     child: Padding(
@@ -103,7 +110,9 @@ class _StudentListState extends State<StudentList> {
                       child: Text(
                         "TE COMP",
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   )),
@@ -119,7 +128,7 @@ class _StudentListState extends State<StudentList> {
                     height: 70,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 255, 118, 67),
+                      color: Colors.blue,
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
                     child: Padding(
@@ -130,7 +139,9 @@ class _StudentListState extends State<StudentList> {
                       child: Text(
                         "BE COMP",
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   )),

@@ -77,7 +77,7 @@ class _ViewTimetableState extends State<ViewTimetable> {
     //   debugShowCheckedModeBanner: false,
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 255, 118, 67),
+          backgroundColor: Colors.blue,
           centerTitle: true,
           title: const Text('Timetable')),
       body: Center(child: Builder(

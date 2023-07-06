@@ -14,7 +14,7 @@ class _FEStudentsState extends State<FEStudents> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 255, 118, 67),
+        backgroundColor: Colors.blue,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -40,7 +40,7 @@ class _FEStudentsState extends State<FEStudents> {
                       padding: const EdgeInsets.only(bottom: 8),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 255, 118, 67),
+                          color: Colors.blue,
                           borderRadius: BorderRadius.all(Radius.circular(20)),
                         ),
                         width: double.infinity,

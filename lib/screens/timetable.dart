@@ -17,13 +17,13 @@ class _TimetableState extends State<Timetable> {
       floatingActionButton: FloatingActionButton(onPressed: () {}),
       appBar: AppBar(
         title: Text("TimeTable"),
-        backgroundColor: Color.fromARGB(255, 255, 118, 67),
+        backgroundColor: Colors.blue,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 25),
         child: Container(
           decoration: BoxDecoration(
-            color: Color.fromARGB(255, 255, 118, 67),
+            color: Colors.blue,
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           width: double.infinity,

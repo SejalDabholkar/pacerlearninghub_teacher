@@ -21,13 +21,13 @@ class _AssignmentListState extends State<AssignmentList> {
       floatingActionButton: FloatingActionButton(onPressed: () {}),
       appBar: AppBar(
         title: Text("Assignments"),
-        backgroundColor: Color.fromARGB(255, 255, 118, 67),
+        backgroundColor: Colors.blue,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 25),
         child: Container(
           decoration: BoxDecoration(
-            color: Color.fromARGB(255, 255, 118, 67),
+            color: Colors.blue,
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           width: double.infinity,
@@ -37,6 +37,7 @@ class _AssignmentListState extends State<AssignmentList> {
             child: Row(
               children: [
                 Icon(
+                  
                   Icons.file_open_rounded,
                   size: 55,
                 ),
@@ -48,7 +49,8 @@ class _AssignmentListState extends State<AssignmentList> {
                     Text(
                       "Assignment 1",
                       style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 14,
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(6.0),

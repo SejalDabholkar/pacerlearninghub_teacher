@@ -77,7 +77,7 @@ class _AssignmentState extends State<Assignment> {
     //   debugShowCheckedModeBanner: false,
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 255, 118, 67),
+          backgroundColor: Colors.blue,
           centerTitle: true,
           title: const Text('Assignment 1')),
       body: Center(child: Builder(
@@ -100,6 +100,7 @@ class _AssignmentState extends State<Assignment> {
                   children: const [
                     Icon(Icons.picture_as_pdf, color: Colors.black),
                     SizedBox(
+                      height: 50,
                         width: 30), // Add some space between the icon and text
                     Text(
                       "PDF",
@@ -141,7 +142,7 @@ class _PDFScreenState extends State<PDFScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 255, 118, 67),
+        backgroundColor: Colors.blue,
         title: Text("Assignment 1"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),

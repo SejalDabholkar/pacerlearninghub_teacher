@@ -12,7 +12,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 255, 118, 67),
+        backgroundColor: Colors.blue,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -29,7 +29,7 @@ class _ProfileState extends State<Profile> {
               alignment: Alignment.topCenter,
               child: CircleAvatar(
                 radius: 70,
-                backgroundColor: Colors.black,
+                backgroundColor: Colors.white,
               ),
             ),
             SizedBox(
