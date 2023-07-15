@@ -13,6 +13,45 @@ class MyVerify extends StatefulWidget {
 }
 
 class _MyVerifyState extends State<MyVerify> {
+  String code = "";
+  bool isValueValid = false;
+  Future<void> verifyPhoneNumber() async {
+    print(code);
+    final response = await http.post(
+      Uri.parse('https://pacerlearninghub.onrender.com/auth/verifyOtpTeacher'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'phoneno': MyPhone.verify,
+        'otp': code,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Request success with status:');
+      final responseBody = jsonDecode(response.body);
+
+      final token = responseBody['token'];
+
+      final decodedToken = jsonDecode(utf8.decode(base64Url.decode(token.split('.')[1])));
+      print(decodedToken);
+      final id = decodedToken['id'];
+      final phoneNumber = decodedToken['phoneno'];
+      print('${id}');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Dashboard(
+            id: '${id}',
+            phoneno: '${phoneNumber}',
+          ),
+        ),
+      );
+    } else {
+      // Request failed
+      print('Request failed with status: ${response.statusCode}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
@@ -38,14 +77,17 @@ class _MyVerifyState extends State<MyVerify> {
         color: Color.fromRGBO(234, 239, 243, 1),
       ),
     );
-    var code="";
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: IconButton(
           onPressed: () {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MyPhone(),));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MyPhone()),
+            );
           },
           icon: Icon(
             Icons.arrow_back_ios_rounded,
@@ -66,101 +108,63 @@ class _MyVerifyState extends State<MyVerify> {
                 width: 150,
                 height: 150,
               ),
-              SizedBox(
-                height: 25,
-              ),
+              SizedBox(height: 25),
               Text(
                 "Phone Verification",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
-              SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: 10),
               Text(
                 "We need to register your phone without getting started!",
-                style: TextStyle(
-                  fontSize: 16,
-                ),
+                style: TextStyle(fontSize: 16),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(
-                height: 30,
-              ),
+              SizedBox(height: 30),
               Pinput(
                 length: 6,
                 defaultPinTheme: defaultPinTheme,
                 focusedPinTheme: focusedPinTheme,
                 submittedPinTheme: submittedPinTheme,
-                onChanged: (value){
-                  code=value;
+                onChanged: (value) {
+                  setState(() {
+                    code = value;
+                    isValueValid = value.length == 6;
+                  });
                 },
-
                 showCursor: true,
                 onCompleted: (pin) => print(pin),
               ),
-              SizedBox(
-                height: 20,
-              ),
+              SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 height: 45,
                 child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10))),
-                    onPressed: () async {
-                      print(code);
-                      final response = await http.post(
-                        Uri.parse('https://pacerlearninghub.onrender.com/auth/verifyOtpTeacher'),
-                        headers: {'Content-Type': 'application/json'},
-                        body: jsonEncode({
-                          'phoneno': MyPhone.verify,
-                          'otp': code,
-                        }),
-                      );
-                      if (response.statusCode == 200) {
-                        print('Request sucess with status:-------------------------------------------------------------------------');
-                        final responseBody = jsonDecode(response.body);
-
-                        // Extract the token from the response
-                        final token = responseBody['token'];
-
-                        // Decode the JWT token
-                        final decodedToken = jsonDecode(utf8.decode(base64Url.decode(token.split('.')[1])));
-                        print(decodedToken);
-                        final id = decodedToken['id'];
-                        final phoneNumber = decodedToken['phoneno'];
-                        print('${id}//////////////////////////////////////////////////////////////////////////////////////////');
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => Dashboard(
-                            id: '${id}',
-                            phoneno:'${phoneNumber}',
-                          )),
-                        );
-                      } else {
-                        // Request failed
-                        print('Request failed with status: ${response.statusCode}');
-                      }
-                    },
-                    child: Text("Verify Phone Number")),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: isValueValid ? verifyPhoneNumber : null,
+                  child: Text("Verify Phone Number"),
+                ),
               ),
-              Row(
+              Column(
                 children: [
                   TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => MyPhone())
-                        );
-                      },
-                      child: Text(
-                        "Edit Phone Number ?",
-                        style: TextStyle(color: Colors.black),
-                      ))
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyPhone()),
+                      );
+                    },
+                    child: Text(
+                      "Edit Phone Number ?",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),

@@ -41,7 +41,7 @@ dependencies:
   path_provider: ^2.0.15
   permission_handler: ^10.2.0
   dio: ^5.1.2
-  pinput: ^2.2.30
+  pinput: ^2.2.31
   flutter_pdfview: 
   
 
