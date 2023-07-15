@@ -1,9 +1,6 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:pacers_teacher/loginscreen/signupscreen.dart';
-
-
+import 'package:pacers_teacher/loginscreen/loginOtp.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,13 +17,13 @@ class InitState extends State<SplashScreen> {
   }
 
   startTimer() async {
-    var duration = Duration(seconds: 20);
+    var duration = Duration(seconds: 5);
     return Timer(duration, registerRoute);
   }
 
   registerRoute() {
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Signup()));
+        context, MaterialPageRoute(builder: (context) => MyPhone()));
   }
 
   @override
@@ -40,7 +37,7 @@ class InitState extends State<SplashScreen> {
         children: const [
           Padding(
             padding: EdgeInsets.only(left: 53.5, right: 53.5),
-            child: SizedBox(child:Image(image: AssetImage("assets/images/logo.jpeg"))),
+            child: SizedBox(child:Image(image: AssetImage("assets/images/pcce.PNG"))),
           )
         ],
       ),

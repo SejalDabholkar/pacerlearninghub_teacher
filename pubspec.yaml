@@ -41,6 +41,7 @@ dependencies:
   path_provider: ^2.0.15
   permission_handler: ^10.2.0
   dio: ^5.1.2
+  pinput: ^2.2.30
   flutter_pdfview: 
   
 
@@ -67,8 +68,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-assets:
-    - images/logo.jpeg
+  assets:
+    - assets/images/
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
