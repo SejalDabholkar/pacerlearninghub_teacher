@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:pacers_teacher/loginscreen/verify.dart';
-
+import 'dart:async';
 class MyPhone extends StatefulWidget {
   const MyPhone({Key? key}) : super(key: key);
   static String verify = "";
@@ -15,6 +15,7 @@ class _LoginPageState extends State<MyPhone> {
   TextEditingController phoneController = TextEditingController();
 
   bool isPhoneNumberValid = false;
+  bool isButtonDisabled = false;
 
   @override
   void initState() {
@@ -54,6 +55,19 @@ class _LoginPageState extends State<MyPhone> {
       });
     }
   }
+
+  void startButtonTimer() {
+    setState(() {
+      isButtonDisabled = true;
+    });
+
+    Timer(Duration(minutes: 1), () {
+      setState(() {
+        isButtonDisabled = false;
+      });
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +148,10 @@ class _LoginPageState extends State<MyPhone> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: isPhoneNumberValid ? sendVerificationCode : null,
+                  onPressed: isPhoneNumberValid && !isButtonDisabled ? () {
+                    sendVerificationCode();
+                    startButtonTimer();
+                  } : null,
                   child: Text("Send the code"),
                 ),
               ),
