@@ -93,7 +93,7 @@ class _DashboardState extends State<Dashboard> {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
                   width: double.infinity,
-                  height: 90,
+                  height: 120,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 25, horizontal: 25),

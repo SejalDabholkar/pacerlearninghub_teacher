@@ -16,36 +16,173 @@ class _drawerState extends State<drawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      // child: ListView(
+      //   padding: EdgeInsets.symmetric(vertical: 180, horizontal: 25),
+      //   children: <Widget>[
+      //     ElevatedButton(
+      //         onPressed: () {
+      //           Navigator.push(context,
+      //               MaterialPageRoute(builder: (context) => StudentList()));
+      //         },
+      //         child: Text("Student List")),
+      //     ElevatedButton(
+      //         onPressed: () {
+      //           Navigator.push(context,
+      //               MaterialPageRoute(builder: (context) => AssignmentList()));
+      //         },
+      //         child: Text("Assignment")),
+      //     ElevatedButton(
+      //         onPressed: () {
+      //           Navigator.push(context,
+      //               MaterialPageRoute(builder: (context) => Notes()));
+      //         },
+      //         child: Text("Notes")),
+      //     ElevatedButton(
+      //         onPressed: () {
+      //           Navigator.push(context,
+      //               MaterialPageRoute(builder: (context) => Timetable()));
+      //         },
+      //         child: Text("Time Table")),
+      //     ElevatedButton(onPressed: () {}, child: Text("Results")),
+      //   ],
+      // ),
+
+      
       child: ListView(
         padding: EdgeInsets.symmetric(vertical: 180, horizontal: 25),
         children: <Widget>[
-          ElevatedButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => StudentList()));
-              },
-              child: Text("Student List")),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AssignmentList()));
-              },
-              child: Text("Assignment")),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Notes()));
-              },
-              child: Text("Notes")),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Timetable()));
-              },
-              child: Text("Time Table")),
-          ElevatedButton(onPressed: () {}, child: Text("Results")),
+          ListTile(
+            leading: Container(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.people,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            title: Text("Student List"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => StudentList()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Container(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.assignment,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            title: Text("Assignment"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AssignmentList()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Container(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.note,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            title: Text("Notes"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Notes()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Container(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.schedule,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            title: Text("Time Table"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Timetable()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Container(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.bar_chart,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            title: Text("Results"),
+            onTap: () {
+              // TODO: Add functionality for Results
+            },
+          ),
+           ListTile(
+            leading: Container(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.notifications_none_sharp,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            title: Text("Notice"),
+            onTap: () {
+              // TODO: Add functionality for Results
+            },
+          )
         ],
       ),
     );
   }
 }
+
+
+
+
