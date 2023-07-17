@@ -3,16 +3,18 @@ import 'package:pacers_teacher/components/drawer.dart';
 import 'package:pacers_teacher/screens/events.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pacers_teacher/loginscreen/loginOtp.dart';
 
 class Dashboard extends StatefulWidget {
-  final String? id;
-  final String? phoneno;
-
-  Dashboard({
-    this.id,
-    this.phoneno,
-    Key? key,
-  }) : super(key: key);
+  // final String? id;
+  // final String? phoneno;
+  //
+  // Dashboard({
+  //   this.id,
+  //   this.phoneno,
+  //   Key? key,
+  // }) : super(key: key);
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -28,16 +30,35 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<Map<String, dynamic>> fetchUserData() async {
-    print(' is ${widget.id}-------------------------------------------------------------------------------------------------- ');
-    final response = await http.get(Uri.parse('https://pacerlearninghub.onrender.com/teacherProfile/singleteacherinfo/${widget.id}'));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedId = prefs.getString('id');
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data;
+    if (storedId != null) {
+      print('Stored ID is: $storedId');
+      final response = await http.get(Uri.parse('https://pacerlearninghub.onrender.com/teacherProfile/singleteacherinfo/$storedId'));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data;
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        throw Exception('Failed to load user data');
+      }
     } else {
-      print('Request failed with status: ${response.statusCode}');
-      throw Exception('Failed to load user data');
+      print('Stored ID not found');
+      throw Exception('Stored ID not found');
     }
+  }
+
+  Future<void> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => MyPhone()),
+          (route) => false,
+    );
   }
 
   @override
@@ -47,7 +68,16 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Center(child: Text("DASHBOARD")),
+        actions: [
+          IconButton(
+            onPressed: () {
+              logout();
+            },
+            icon: Icon(Icons.logout),
+          ),
+        ],
       ),
+
       drawer: drawer(),
       body: FutureBuilder<Map<String, dynamic>>(
         future: _userData,

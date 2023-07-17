@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pacers_teacher/loginscreen/loginOtp.dart';
 import 'package:pacers_teacher/dashboard.dart';
 import 'package:pinput/pinput.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -37,12 +38,18 @@ class _MyVerifyState extends State<MyVerify> {
       final id = decodedToken['id'];
       final phoneNumber = decodedToken['phoneno'];
       print('${id}');
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+      await prefs.setString('id', id);
+      await prefs.setString('phoneno', phoneNumber);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => Dashboard(
-            id: '${id}',
-            phoneno: '${phoneNumber}',
+            // id: '${id}',
+            // phoneno: '${phoneNumber}',
           ),
         ),
       );
@@ -51,6 +58,7 @@ class _MyVerifyState extends State<MyVerify> {
       print('Request failed with status: ${response.statusCode}');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
