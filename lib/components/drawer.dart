@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pacers_teacher/feedback/cateenfeedback.dart';
 
 import 'package:pacers_teacher/screens/assignment.dart';
 import 'package:pacers_teacher/screens/notes.dart';
@@ -175,6 +176,28 @@ class _drawerState extends State<drawer> {
             title: Text("Notice"),
             onTap: () {
               // TODO: Add functionality for Results
+            },
+           ),
+            ListTile(
+            leading: Container(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.feed_outlined,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            title: Text("Feedback"),
+               onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => GoogleFormScreen()),
+              );
             },
           )
         ],
