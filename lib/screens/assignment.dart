@@ -95,7 +95,7 @@ class _AssignmentListState extends State<AssignmentList> {
   }
 
   Future<void> uploadFile(File file) async {
-    final url = 'http://10.0.2.2:8000/assignment';
+    final url = 'https://pacerlearninghub.onrender.com/notice';
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.files.add(await http.MultipartFile.fromPath('file', file.path));
@@ -113,7 +113,7 @@ class _AssignmentListState extends State<AssignmentList> {
   Future<void> fetchData() async {
     try {
       final url =
-          'http://10.0.2.2:8000/assignment'; // Replace with your Node.js server URL
+          'https://pacerlearninghub.onrender.com/notice'; // Replace with your Node.js server URL
 
       final response = await http.get(Uri.parse(url));
 

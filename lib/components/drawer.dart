@@ -3,6 +3,8 @@ import 'package:pacers_teacher/feedback/cateenfeedback.dart';
 
 import 'package:pacers_teacher/screens/assignment.dart';
 import 'package:pacers_teacher/screens/notes.dart';
+import 'package:pacers_teacher/screens/notice.dart';
+import 'package:pacers_teacher/screens/result.dart';
 import 'package:pacers_teacher/screens/studentlist.dart';
 import 'package:pacers_teacher/screens/timetable.dart';
 
@@ -114,7 +116,7 @@ class _drawerState extends State<drawer> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Notes()),
+                MaterialPageRoute(builder: (context) => NotesScreen()),
               );
             },
           ),
@@ -156,7 +158,10 @@ class _drawerState extends State<drawer> {
             ),
             title: Text("Results"),
             onTap: () {
-              // TODO: Add functionality for Results
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Result()),
+              );
             },
           ),
            ListTile(
@@ -175,7 +180,10 @@ class _drawerState extends State<drawer> {
             ),
             title: Text("Notice"),
             onTap: () {
-              // TODO: Add functionality for Results
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NoticeScreen()),
+              );
             },
            ),
             ListTile(
