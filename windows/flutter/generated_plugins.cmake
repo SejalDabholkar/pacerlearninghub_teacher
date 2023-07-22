@@ -4,7 +4,11 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   permission_handler_windows
+//<<<<<<< code-swapnil
   smart_auth
+//=======
+  url_launcher_windows
+//>>>>>>> main
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

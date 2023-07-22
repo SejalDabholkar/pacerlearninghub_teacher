@@ -100,7 +100,7 @@ class _AssignmentState extends State<Assignment> {
                   children: const [
                     Icon(Icons.picture_as_pdf, color: Colors.black),
                     SizedBox(
-                      height: 50,
+                        height: 50,
                         width: 30), // Add some space between the icon and text
                     Text(
                       "PDF",

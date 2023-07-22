@@ -22,19 +22,19 @@ class Notice {
   }
 }
 
-class NotesScreen extends StatefulWidget {
+class NoticeScreen extends StatefulWidget {
   @override
-  _NotesScreenState createState() => _NotesScreenState();
+  _NoticeScreenState createState() => _NoticeScreenState();
 }
 
-class _NotesScreenState extends State<NotesScreen> {
+class _NoticeScreenState extends State<NoticeScreen> {
   List<Notice> notices = [];
   List<Notice> filteredNotices = [];
   TextEditingController searchController = TextEditingController();
   bool sortAscending = true;
 
   Future<void> fetchNotices() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:8000/notes'));
+    final response = await http.get(Uri.parse('http://10.0.2.2:8000/notice'));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as List<dynamic>;
       setState(() {
