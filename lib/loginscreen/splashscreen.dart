@@ -1,12 +1,11 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:pacers_teacher/loginscreen/signupscreen.dart';
-
-
+import 'package:pacers_teacher/loginscreen/loginOtp.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pacers_teacher/dashboard.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  const SplashScreen({Key? key});
 
   @override
   State<SplashScreen> createState() => InitState();
@@ -20,13 +19,24 @@ class InitState extends State<SplashScreen> {
   }
 
   startTimer() async {
-    var duration = Duration(seconds: 20);
+    var duration = Duration(seconds: 5);
     return Timer(duration, registerRoute);
   }
 
-  registerRoute() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Signup()));
+  Future<String?> getValidationData() async {
+    final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? finalId = sharedPreferences.getString('id');
+    return finalId;
+  }
+
+
+  registerRoute() async {
+    String? id = await getValidationData();
+    if (id != null && id.isNotEmpty) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Dashboard()));
+    } else {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyPhone()));
+    }
   }
 
   @override
@@ -34,15 +44,14 @@ class InitState extends State<SplashScreen> {
     return initWidget();
   }
 
-  initWidget() {
+  Widget initWidget() {
     return Scaffold(
-      body: Column(
-        children: const [
-          Padding(
-            padding: EdgeInsets.only(left: 53.5, right: 53.5),
-            child: SizedBox(child:Image(image: AssetImage("assets/images/logo.jpeg"))),
-          )
-        ],
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 53.5),
+          child: Image.asset("assets/images/pcce.PNG"),
+        ),
       ),
     );
   }
