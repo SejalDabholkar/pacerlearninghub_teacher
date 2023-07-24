@@ -111,51 +111,68 @@ class _DashboardState extends State<Dashboard> {
                       const EdgeInsets.symmetric(vertical: 25, horizontal: 25),
                   child: Column(
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                        ),
-                        height: 276,
-                        width: double.infinity,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(top: 23, bottom: 20),
-                              child: CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(userData['imagepath'] ?? ''),
-                                radius: 50,
-                                backgroundColor: Colors.black,
+                      GestureDetector(
+                        onTap: () {
+                          String? storedId = snapshot.data?[
+                              '_id']; // Get the storedId from the snapshot data
+                          if (storedId != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    TeacherProfilePage(teacherId: storedId),
                               ),
-                            ),
-                            Text(
-                              "${userData['name']}",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                            );
+                          } else {
+                            return print('id not found');
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                          height: 276,
+                          width: double.infinity,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 23, bottom: 20),
+                                child: CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(userData['imagepath'] ?? ''),
+                                  radius: 50,
+                                  backgroundColor: Colors.black,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              "${userData['email']}",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                              Text(
+                                "${userData['name']}",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              "${userData['address']}",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                              SizedBox(height: 5),
+                              Text(
+                                "${userData['email']}",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                          ],
+                              SizedBox(height: 5),
+                              Text(
+                                "${userData['address']}",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       SizedBox(height: 20),
@@ -193,7 +210,75 @@ class _DashboardState extends State<Dashboard> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Event 1",
+                                    "Cultural Events",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {},
+                                    child: Text("Join"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                            ),
+                            width: double.infinity,
+                            height: 90,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 25, horizontal: 25),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Technical Events",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {},
+                                    child: Text("Join"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                            ),
+                            width: double.infinity,
+                            height: 90,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 25, horizontal: 25),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Non-Technical Events",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,

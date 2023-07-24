@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart'; // Import the open_file package
 
 class AssignmentList extends StatefulWidget {
   const AssignmentList({Key? key}) : super(key: key);
@@ -184,18 +185,34 @@ class PDFViewerScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PDFView(
-                  filePath: url,
-                ),
-              ),
-            );
+            _openPDF(); // Use the _openPDF function to open the PDF
           },
           child: Text('View PDF'),
         ),
       ),
     );
   }
+
+  void _openPDF() async {
+    // Use the open_file package to open the PDF file
+    try {
+      final filePath = url;
+      final result = await OpenFile.open(filePath);
+
+      if (result.type == ResultType.done || result.type == ResultType.noAppToOpen) {
+        // File opened successfully or no app to open the file
+      } else {
+        // Error opening the file
+        print('Error opening PDF: ${result.message}');
+      }
+    } catch (e) {
+      print('Error opening PDF: $e');
+    }
+  }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: AssignmentList(),
+  ));
 }

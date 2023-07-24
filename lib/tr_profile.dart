@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -25,11 +23,13 @@ class _TeacherProfilePageState extends State<TeacherProfilePage> {
   }
 
   void fetchTeacherInfo() async {
+
     try {
-      final apiUrl = 'https://your-api-url.com/teacher/${widget.teacherId}';
-      
+      final apiUrl =
+          'https://pacerlearninghub.onrender.com/teacherProfile/singleteacherinfo/${widget.teacherId}';
+
       final response = await http.get(Uri.parse(apiUrl));
-      
+
       if (response.statusCode == 200) {
         final teacherInfo = json.decode(response.body);
 
@@ -65,7 +65,8 @@ class _TeacherProfilePageState extends State<TeacherProfilePage> {
                     children: <Widget>[
                       CircleAvatar(
                         radius: 80,
-                        backgroundImage: NetworkImage(_teacherInfo['avatarUrl']),
+                        backgroundImage:
+                            NetworkImage(_teacherInfo['imagepath']),
                       ),
                       SizedBox(height: 16.0),
                       Text(
@@ -77,7 +78,7 @@ class _TeacherProfilePageState extends State<TeacherProfilePage> {
                       ),
                       SizedBox(height: 8.0),
                       Text(
-                        _teacherInfo['jobTitle'],
+                        _teacherInfo['phoneno'],
                         style: TextStyle(fontSize: 18),
                       ),
                       SizedBox(height: 16.0),
@@ -96,13 +97,13 @@ class _TeacherProfilePageState extends State<TeacherProfilePage> {
                               ListTile(
                                 leading: Icon(Icons.phone),
                                 title: Text('Phone'),
-                                subtitle: Text(_teacherInfo['phone']),
+                                subtitle: Text(_teacherInfo['phoneno']),
                               ),
                               Divider(),
                               ListTile(
                                 leading: Icon(Icons.school),
-                                title: Text('School'),
-                                subtitle: Text(_teacherInfo['school']),
+                                title: Text('Address'),
+                                subtitle: Text(_teacherInfo['address']),
                               ),
                             ],
                           ),
@@ -114,6 +115,3 @@ class _TeacherProfilePageState extends State<TeacherProfilePage> {
     );
   }
 }
-
-
- 
