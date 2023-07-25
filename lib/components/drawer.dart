@@ -9,6 +9,8 @@ import 'package:pacers_teacher/screens/result.dart';
 import 'package:pacers_teacher/screens/studentlist.dart';
 import 'package:pacers_teacher/screens/timetable.dart';
 
+import '../screens/attendance.dart';
+
 class drawer extends StatefulWidget {
   const drawer({super.key});
 
@@ -161,6 +163,28 @@ class _drawerState extends State<drawer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Timetable()),
+              );
+            },
+          ),
+           ListTile(
+            leading: Container(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.list,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            title: Text("Attendance"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AttendanceApp()),
               );
             },
           ),
