@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -45,22 +47,34 @@ class _BEStudentsState extends State<BEStudents> {
                         ),
                         width: double.infinity,
                         height: 70,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          child: Row(
-                            children: [
-                              Image.network(snapshot.data![i]["imagepath"]),
-                              SizedBox(
-                                width: 30,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => StudentProfilePage(
+                                  studentData: snapshot.data![i],
+                                ),
                               ),
-                              Column(
-                                children: [
-                                  Text(snapshot.data![i]["name"]),
-                                  //Text(snapshot.data![i]["email"]),
-                                ],
-                              ),
-                            ],
+                            );
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            child: Row(
+                              children: [
+                                Image.network(snapshot.data![i]["imagepath"]),
+                                SizedBox(
+                                  width: 30,
+                                ),
+                                Column(
+                                  children: [
+                                    Text(snapshot.data![i]["name"]),
+                                    //Text(snapshot.data![i]["email"]),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -81,6 +95,7 @@ class _BEStudentsState extends State<BEStudents> {
     try {
       var response = await http.get(Uri.parse(
           "https://pacerlearninghub.onrender.com/studentProfile/646e169a8f5889356ddf5589"));
+      print(response.body);
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
@@ -89,5 +104,30 @@ class _BEStudentsState extends State<BEStudents> {
     } catch (e) {
       return Future.error(e);
     }
+  }
+}
+
+class StudentProfilePage extends StatelessWidget {
+  final Map<String, dynamic> studentData;
+
+  const StudentProfilePage({required this.studentData});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Student Profile'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Display student profile details here using studentData
+            Text('Name: ${studentData["name"]}'),
+            // Add more Text widgets for other details like email, etc.
+          ],
+        ),
+      ),
+    );
   }
 }

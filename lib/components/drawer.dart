@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pacers_teacher/dashboard.dart';
 import 'package:pacers_teacher/feedback/cateenfeedback.dart';
 
 import 'package:pacers_teacher/screens/assignment.dart';
@@ -50,10 +51,31 @@ class _drawerState extends State<drawer> {
       //   ],
       // ),
 
-      
       child: ListView(
         padding: EdgeInsets.symmetric(vertical: 180, horizontal: 25),
         children: <Widget>[
+          ListTile(
+            leading: Container(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.home_rounded,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            title: Text("Home"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Dashboard()),
+              );
+            },
+          ),
           ListTile(
             leading: Container(
               decoration: BoxDecoration(
@@ -164,7 +186,7 @@ class _drawerState extends State<drawer> {
               );
             },
           ),
-           ListTile(
+          ListTile(
             leading: Container(
               decoration: BoxDecoration(
                 color: Colors.blue,
@@ -185,8 +207,8 @@ class _drawerState extends State<drawer> {
                 MaterialPageRoute(builder: (context) => NoticeScreen()),
               );
             },
-           ),
-            ListTile(
+          ),
+          ListTile(
             leading: Container(
               decoration: BoxDecoration(
                 color: Colors.blue,
@@ -201,7 +223,7 @@ class _drawerState extends State<drawer> {
               ),
             ),
             title: Text("Feedback"),
-               onTap: () {
+            onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => GoogleFormScreen()),
@@ -213,7 +235,3 @@ class _drawerState extends State<drawer> {
     );
   }
 }
-
-
-
-

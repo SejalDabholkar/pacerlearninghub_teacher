@@ -1,164 +1,255 @@
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:pacers_teacher/components/drawer.dart';
-import 'package:pacers_teacher/dashboard.dart';
-import 'dart:convert';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-
-class Notice {
-  final String title;
-  final String message;
-  final String filePath;
-
-  Notice({required this.title, required this.message, required this.filePath});
-
-  factory Notice.fromJson(Map<String, dynamic> json) {
-    return Notice(
-      title: json['title'] ?? '',
-      message: json['message'] ?? '',
-      filePath: json['filepath'] ?? '',
-    );
-  }
-}
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Timetable extends StatefulWidget {
+  const Timetable({Key? key}) : super(key: key);
+
   @override
   _TimetableState createState() => _TimetableState();
 }
 
 class _TimetableState extends State<Timetable> {
-  List<Notice> notices = [];
-  List<Notice> filteredNotices = [];
-  TextEditingController searchController = TextEditingController();
-  bool sortAscending = true;
-
-  Future<void> fetchNotices() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:8000/timetable'));
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body) as List<dynamic>;
-      setState(() {
-        notices = data.map((item) => Notice.fromJson(item)).toList();
-        filteredNotices = notices;
-      });
-    } else {
-      // Handle error response
-      print('Error: ${response.statusCode}');
-    }
-  }
-
-  void openPDF(String filePath) async {
-    try {
-      final bool canLaunch = await canLaunchUrl(Uri.parse(filePath));
-      if (canLaunch) {
-        await launchUrl(Uri.parse(filePath));
-      } else {
-        print('Could not launch $filePath');
-      }
-    } catch (e) {
-      print('Error launching $filePath: $e');
-    }
-  }
-
-  void sortNotices() {
-    setState(() {
-      sortAscending = !sortAscending;
-      filteredNotices.sort((a, b) => sortAscending
-          ? a.title.compareTo(b.title)
-          : b.title.compareTo(a.title));
-    });
-  }
-
-  void searchNotices(String query) {
-    setState(() {
-      filteredNotices = notices
-          .where((notice) =>
-              notice.title.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    });
-  }
+  late Future<List<dynamic>> _pdfData;
+  var pdfList = [];
+  var tempPdfList = [];
 
   @override
   void initState() {
     super.initState();
-    fetchNotices();
+    _pdfData = fetchPDFData();
+
+    _pdfData.then((value) => {getLinks(value)});
+  }
+
+  getLinks(List<dynamic> value) async {
+    print(value);
+    for (var i = 0; i < value.length; i++) {
+      File remotePDFpath = await createFileOfPdfUrl(value[i]['link']);
+      value[i]['link'] = remotePDFpath.path;
+
+      if (i == value.length - 1) {
+        setState(() {
+          pdfList = value;
+        });
+      }
+    }
+  }
+
+  Future<List<dynamic>> fetchPDFData() async {
+    final response = await http.get(Uri.parse(
+        'https://pacerlearninghub.onrender.com/timetable/646e169a8f5889356ddf5589'));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      return data;
+    } else {
+      throw Exception('Failed to load user data');
+    }
+  }
+
+  Future<File> createFileOfPdfUrl(String url) async {
+    Completer<File> completer = Completer();
+    print("Start download file from internet!");
+    try {
+      final filename = url.substring(url.lastIndexOf("/") + 1);
+      var request = await HttpClient().getUrl(Uri.parse(url));
+      var response = await request.close();
+      var bytes = await consolidateHttpClientResponseBytes(response);
+      var dir = await getApplicationDocumentsDirectory();
+      print("Download files");
+      print("${dir.path}/$filename");
+      File file = File("${dir.path}/$filename");
+
+      await file.writeAsBytes(bytes, flush: true);
+      completer.complete(file);
+    } catch (e) {
+      throw Exception('Error parsing asset file!');
+    }
+
+    return completer.future;
+  }
+
+  Future<File> fromAsset(String asset, String filename) async {
+    Completer<File> completer = Completer();
+
+    try {
+      var dir = await getApplicationDocumentsDirectory();
+      File file = File("${dir.path}/$filename");
+      var data = await rootBundle.load(asset);
+      var bytes = data.buffer.asUint8List();
+      await file.writeAsBytes(bytes, flush: true);
+      completer.complete(file);
+    } catch (e) {
+      throw Exception('Error parsing asset file!');
+    }
+
+    return completer.future;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: drawer(),
-      appBar: AppBar(
-        toolbarHeight: 106,
-        backgroundColor: Color.fromARGB(255, 2, 101, 251),
-        title: Text("Pacers Learning Hub"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Dashboard()),
-              );
-            },
-            icon: Icon(Icons.arrow_back_ios),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: searchController,
-              onChanged: searchNotices,
-              decoration: InputDecoration(
-                labelText: 'Search by Name',
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredNotices.length,
-              itemBuilder: (context, index) {
-                final notice = filteredNotices[index];
-                return ListTile(
-                  title: Text('${index + 1}. ${notice.title}'),
-                  subtitle: Text(notice.message),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PDFViewerScreen(
-                          pdfPath: notice.filePath,
-                          title: notice.title,
+        appBar: AppBar(centerTitle: true, title: const Text('Timetable')),
+        body: FutureBuilder<List<dynamic>>(
+          future: _pdfData,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                itemCount: pdfList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Center(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  spreadRadius: 1,
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (pdfList[index].isNotEmpty) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PDFScreen(
+                                          path: pdfList[index]['link']),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: ListTile(
+                                title: Text(
+                                  '${index + 1}. ${pdfList[index]['title']}',
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
+                      ],
+                    ),
+                  );
+                },
+              );
+            } else if (snapshot.hasError) {
+              return Text('${snapshot.error}');
+            }
+
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16.0),
+                  Text('Loading Timetable...'),
+                ],
+              ),
+            );
+          },
+        ));
   }
 }
 
-class PDFViewerScreen extends StatelessWidget {
-  final String pdfPath;
-  final String title;
+class PDFScreen extends StatefulWidget {
+  final String? path;
 
-  PDFViewerScreen({required this.pdfPath, required this.title});
+  PDFScreen({Key? key, this.path}) : super(key: key);
+
+  _PDFScreenState createState() => _PDFScreenState();
+}
+
+class _PDFScreenState extends State<PDFScreen> with WidgetsBindingObserver {
+  final Completer<PDFViewController> _controller =
+      Completer<PDFViewController>();
+  int? pages = 0;
+  int? currentPage = 0;
+  bool isReady = false;
+  String errorMessage = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text("Timetable"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: <Widget>[],
       ),
-      body: PDFView(
-        filePath: pdfPath,
+      body: Stack(
+        children: <Widget>[
+          PDFView(
+            filePath: widget.path,
+            enableSwipe: true,
+            swipeHorizontal: true,
+            autoSpacing: false,
+            pageFling: true,
+            pageSnap: true,
+            defaultPage: currentPage!,
+            fitPolicy: FitPolicy.BOTH,
+            preventLinkNavigation:
+                false, // if set to true the link is handled in flutter
+            onRender: (_pages) {
+              setState(() {
+                pages = _pages;
+                isReady = true;
+              });
+            },
+            onError: (error) {
+              setState(() {
+                errorMessage = error.toString();
+              });
+              print(error.toString());
+            },
+            onPageError: (page, error) {
+              setState(() {
+                errorMessage = '$page: ${error.toString()}';
+              });
+              print('$page: ${error.toString()}');
+            },
+            onViewCreated: (PDFViewController pdfViewController) {
+              _controller.complete(pdfViewController);
+            },
+            onLinkHandler: (String? uri) {
+              print('goto uri: $uri');
+            },
+            onPageChanged: (int? page, int? total) {
+              print('page change: $page/$total');
+              setState(() {
+                currentPage = page;
+              });
+            },
+          ),
+          errorMessage.isEmpty
+              ? !isReady
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Container()
+              : Center(
+                  child: Text(errorMessage),
+                )
+        ],
       ),
     );
   }

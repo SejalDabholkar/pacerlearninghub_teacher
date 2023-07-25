@@ -1,78 +1,187 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:file_picker/file_picker.dart';
-import 'dart:io';
+import 'package:pacers_teacher/components/drawer.dart';
+import 'package:pacers_teacher/dashboard.dart';
+import 'dart:convert';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:open_file/open_file.dart'; // Import the open_file package
 
 class AssignmentList extends StatefulWidget {
   const AssignmentList({Key? key}) : super(key: key);
 
   @override
-  State<AssignmentList> createState() => _AssignmentListState();
+  _AssignmentListState createState() => _AssignmentListState();
 }
 
 class _AssignmentListState extends State<AssignmentList> {
-  List<String> pdfFiles = [];
+  late Future<List<dynamic>> _pdfData;
+  var pdfList = [];
+  final TextEditingController _searchController = TextEditingController();
+  List<dynamic> _filteredPdfList = [];
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    _pdfData = fetchPDFData();
+    _pdfData.then((value) => {getLinks(value)});
+  }
+
+  getLinks(List<dynamic> value) async {
+    for (var i = 0; i < value.length; i++) {
+      File remotePDFpath = await createFileOfPdfUrl(value[i]['file_path']);
+      value[i]['file_path'] = remotePDFpath.path;
+      pdfList.add(value[i]);
+
+      if (i == value.length - 1) {
+        setState(() {
+          pdfList = value;
+          _filteredPdfList = value; // Initialize with all items
+        });
+      }
+    }
+  }
+
+  Future<List<dynamic>> fetchPDFData() async {
+    final response = await http
+        .get(Uri.parse('https://pacerlearninghub.onrender.com/assignment'));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to load user data');
+    }
+  }
+
+  Future<File> createFileOfPdfUrl(String url) async {
+    Completer<File> completer = Completer();
+    print("Start download file from internet!");
+    try {
+      final filename = url.substring(url.lastIndexOf("/") + 1);
+      var request = await HttpClient().getUrl(Uri.parse(url));
+      var response = await request.close();
+      var bytes = await consolidateHttpClientResponseBytes(response);
+      var dir = await getApplicationDocumentsDirectory();
+      print("Download files");
+      print("${dir.path}/$filename");
+      File file = File("${dir.path}/$filename");
+
+      await file.writeAsBytes(bytes, flush: true);
+      completer.complete(file);
+    } catch (e) {
+      throw Exception('Error parsing asset file!');
+    }
+
+    return completer.future;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: drawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           pickAndUploadFile();
         },
         child: Icon(Icons.file_upload),
       ),
-      appBar: AppBar(
-        title: Text("Assignments"),
-        backgroundColor: Colors.blue,
-      ),
-      body: ListView.builder(
-        itemCount: pdfFiles.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              openPDF(index);
-            },
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 1,
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: ListTile(
-                title: Text(
-                  "Assignment ${index}",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+      appBar: AppBar(centerTitle: true, title: const Text('Assignments')),
+      body: FutureBuilder<List<dynamic>>(
+        future: _pdfData,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      labelText: 'Search by Name',
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _filteredPdfList = pdfList
+                            .where((item) => item['title']
+                                .toLowerCase()
+                                .contains(value.toLowerCase()))
+                            .toList();
+                      });
+                    },
                   ),
                 ),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () {
-                    deletePDF(index);
-                  },
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _filteredPdfList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Center(
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      spreadRadius: 1,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (_filteredPdfList[index].isNotEmpty) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => PDFScreen(
+                                            path: _filteredPdfList[index]
+                                                ['file_path'],
+                                            title: _filteredPdfList[index]
+                                                ['title'],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: ListTile(
+                                    title: Text(
+                                      '${index + 1}. ${_filteredPdfList[index]['title']}',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
+              ],
+            );
+          } else if (snapshot.hasError) {
+            return Text('${snapshot.error}');
+          }
+
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16.0),
+                Text('Loading Results...'),
+              ],
             ),
           );
         },
@@ -96,7 +205,7 @@ class _AssignmentListState extends State<AssignmentList> {
   }
 
   Future<void> uploadFile(File file) async {
-    final url = 'https://pacerlearninghub.onrender.com/notice';
+    final url = 'https://pacerlearninghub.onrender.com/result';
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.files.add(await http.MultipartFile.fromPath('file', file.path));
@@ -105,114 +214,97 @@ class _AssignmentListState extends State<AssignmentList> {
 
     if (response.statusCode == 200) {
       print('File uploaded successfully');
-      fetchData(); // Refresh the PDF list after uploading
+      fetchPDFData(); // Refresh the PDF list after uploading
     } else {
       print('Error uploading file. Status code: ${response.statusCode}');
     }
   }
-
-  Future<void> fetchData() async {
-    try {
-      final url =
-          'https://pacerlearninghub.onrender.com/notice'; // Replace with your Node.js server URL
-
-      final response = await http.get(Uri.parse(url));
-
-      if (response.statusCode == 200) {
-        final List<dynamic> fileList = json.decode(response.body);
-        final List<String> fetchedPDFFiles =
-            fileList.map((file) => file.toString()).toList();
-        setState(() {
-          pdfFiles = fetchedPDFFiles;
-        });
-      } else {
-        throw Exception('Failed to fetch PDF files');
-      }
-    } catch (error) {
-      print('Error fetching data: $error');
-    }
-  }
-
-  void openPDF(int index) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PDFViewerScreen(
-          url: 'http://10.0.2.2:8000/assignment/${[index]}',
-          onDelete: () {
-            deletePDF(index);
-          },
-        ),
-      ),
-    );
-  }
-
-  void deletePDF(int index) {
-    final url = 'http://10.0.2.2:8000/assignment/${index}';
-
-    http.delete(Uri.parse(url)).then((response) {
-      if (response.statusCode == 200) {
-        print('PDF deleted successfully');
-        fetchData(); // Refresh the PDF list after deletion
-      } else {
-        print('Error deleting PDF. Status code: ${response.statusCode}');
-      }
-    });
-  }
 }
 
-class PDFViewerScreen extends StatelessWidget {
-  final String url;
-  final VoidCallback onDelete;
+class PDFScreen extends StatefulWidget {
+  final String? path;
+  final String title;
 
-  const PDFViewerScreen({
-    required this.url,
-    required this.onDelete,
-  });
+  PDFScreen({Key? key, this.path, required this.title}) : super(key: key);
+
+  _PDFScreenState createState() => _PDFScreenState();
+}
+
+class _PDFScreenState extends State<PDFScreen> with WidgetsBindingObserver {
+  final Completer<PDFViewController> _controller =
+      Completer<PDFViewController>();
+  int? pages = 0;
+  int? currentPage = 0;
+  bool isReady = false;
+  String errorMessage = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('PDF Viewer'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: onDelete,
-          ),
-        ],
-      ),
-      body: Center(
-        child: ElevatedButton(
+        title: Text(widget.title),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
-            _openPDF(); // Use the _openPDF function to open the PDF
+            Navigator.pop(context);
           },
-          child: Text('View PDF'),
         ),
+        actions: <Widget>[],
+      ),
+      body: Stack(
+        children: <Widget>[
+          PDFView(
+            filePath: widget.path,
+            enableSwipe: true,
+            swipeHorizontal: true,
+            autoSpacing: false,
+            pageFling: true,
+            pageSnap: true,
+            defaultPage: currentPage!,
+            fitPolicy: FitPolicy.BOTH,
+            preventLinkNavigation: false,
+            onRender: (_pages) {
+              setState(() {
+                pages = _pages;
+                isReady = true;
+              });
+            },
+            onError: (error) {
+              setState(() {
+                errorMessage = error.toString();
+              });
+              print(error.toString());
+            },
+            onPageError: (page, error) {
+              setState(() {
+                errorMessage = '$page: ${error.toString()}';
+              });
+              print('$page: ${error.toString()}');
+            },
+            onViewCreated: (PDFViewController pdfViewController) {
+              _controller.complete(pdfViewController);
+            },
+            onLinkHandler: (String? uri) {
+              print('goto uri: $uri');
+            },
+            onPageChanged: (int? page, int? total) {
+              print('page change: $page/$total');
+              setState(() {
+                currentPage = page;
+              });
+            },
+          ),
+          errorMessage.isEmpty
+              ? !isReady
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Container()
+              : Center(
+                  child: Text(errorMessage),
+                )
+        ],
       ),
     );
   }
-
-  void _openPDF() async {
-    // Use the open_file package to open the PDF file
-    try {
-      final filePath = url;
-      final result = await OpenFile.open(filePath);
-
-      if (result.type == ResultType.done || result.type == ResultType.noAppToOpen) {
-        // File opened successfully or no app to open the file
-      } else {
-        // Error opening the file
-        print('Error opening PDF: ${result.message}');
-      }
-    } catch (e) {
-      print('Error opening PDF: $e');
-    }
-  }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: AssignmentList(),
-  ));
 }
